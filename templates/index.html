@@ -1,0 +1,197 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2 class="mb-3">AES-128 Simple Operations</h2>
+<p class="text-muted">Encrypt or decrypt using a 128-bit (32 hex char) key.</p>
+
+{% if error %}
+<div class="alert alert-danger"><strong>Error:</strong> {{ error }}</div>
+{% endif %}
+
+<form method="POST" class="card shadow p-4 mb-4">
+
+    <!-- Operation -->
+    <label class="fw-bold mb-2">Operation:</label>
+    <div class="mb-3">
+        <input type="radio" name="mode" value="encrypt" id="menc"
+            {% if mode is not defined or mode == 'encrypt' %}checked{% endif %}>
+        <label for="menc"> Encrypt</label>
+        &nbsp;&nbsp;
+        <input type="radio" name="mode" value="decrypt" id="mdec"
+            {% if mode == 'decrypt' %}checked{% endif %}>
+        <label for="mdec"> Decrypt</label>
+    </div>
+
+    <!-- Input -->
+    <div class="mb-3">
+        <label class="fw-bold">Input (plaintext or hex ciphertext):</label>
+        <input type="text" class="form-control" name="plaintext" value="{{ input_plaintext }}">
+    </div>
+
+<!-- Key -->
+    <div class="mb-3">
+        <label class="fw-bold">Key (32 hex chars):</label>
+        <div class="input-group">
+            <input type="text" class="form-control" name="key" id="keyField" value="{{ input_key }}">
+            <button type="button" class="btn btn-secondary"
+                    onclick="generateKey()" title="Generate random 128-bit key (hex)">
+                <i class="fa-solid fa-wand-sparkles me-1"></i>
+                Generate
+            </button>
+            <button type="button" class="btn btn-outline-primary"
+                    onclick="copyKey()" title="Copy key to clipboard">
+                <i class="fa-regular fa-copy me-1"></i>
+                Copy
+            </button>
+        </div>
+    </div>
+
+
+    <!-- Buttons -->
+    <div class="d-flex flex-wrap gap-2">
+        <button type="submit" class="btn btn-primary">Run</button>
+        <button type="button" class="btn btn-info" onclick="example()">Try Example</button>
+        <button type="button" class="btn btn-outline-secondary" onclick="clearForm()">Clear</button>
+    </div>
+</form>
+
+<script>
+function example() {
+    document.querySelector("input[name='plaintext']").value = "hello it is EECE455 project";
+    document.querySelector("input[name='key']").value = "000102030405060708090A0B0C0D0E0F";
+    document.getElementById('menc').checked = true;
+}
+
+function generateKey() {
+    const hex = "0123456789ABCDEF";
+    let key = "";
+    for (let i = 0; i < 32; i++) key += hex[Math.floor(Math.random() * 16)];
+    document.getElementById("keyField").value = key;
+}
+
+function copyKey() {
+    navigator.clipboard.writeText(document.getElementById("keyField").value)
+        .catch(()=>{});
+}
+
+function clearForm() {
+    document.querySelector("input[name='plaintext']").value = "";
+    document.querySelector("input[name='key']").value = "";
+    document.getElementById('menc').checked = true;
+}
+</script>
+
+{% if result %}
+<hr>
+<h3 class="mt-4">Result</h3>
+
+<!-- Result box with Copy + JSON download -->
+<div class="alert alert-success d-flex flex-wrap justify-content-between align-items-start gap-2">
+    <div class="flex-grow-1">
+        <strong>{{ result.label }}:</strong>
+        <span class="ciphertext">{{ result.output }}</span>
+    </div>
+
+    <div class="btn-group btn-group-sm">
+        <button class="btn btn-outline-dark" type="button" onclick="copyOutput()" title="Copy output">
+            <i class="fa-regular fa-copy"></i>
+        </button>
+        <button class="btn btn-outline-dark" type="button" onclick="downloadJson()" title="Download JSON report">
+            <i class="fa-solid fa-download"></i>
+        </button>
+    </div>
+</div>
+
+<script>
+// Copy only the final output (ciphertext or recovered plaintext)
+function copyOutput() {
+    navigator.clipboard.writeText("{{ result.output }}").catch(()=>{});
+}
+
+// Full AES debug info (blocks, rounds, states, keys) as a JS object
+const aesReport = {{ result | tojson }};
+
+function downloadJson() {
+    try {
+        const pretty = JSON.stringify(aesReport, null, 2);
+        const blob = new Blob([pretty], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+
+        const a = document.createElement("a");
+        const mode = "{{ mode or 'encrypt' }}";
+        const ts = new Date().toISOString().replace(/[:.]/g, "-");
+        a.href = url;
+        a.download = `aes_report_${mode}_${ts}.json`;
+
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    } catch (e) {
+        console.error("JSON download failed:", e);
+    }
+}
+</script>
+
+<h4 class="mt-4">AES Blocks (click to expand)</h4>
+
+<div class="accordion" id="aesAccordion">
+    {% for block in result.blocks %}
+    <div class="accordion-item">
+        <h2 class="accordion-header" id="heading{{ loop.index }}">
+            <button class="accordion-button collapsed" type="button"
+                    data-bs-toggle="collapse" data-bs-target="#block{{ loop.index }}">
+                Block {{ block.index }} - Input: {{ block.input_block }} - Output: {{ block.output_block }}
+            </button>
+        </h2>
+
+        <div id="block{{ loop.index }}" class="accordion-collapse collapse" data-bs-parent="#aesAccordion">
+            <div class="accordion-body">
+                {% for round_data in block.rounds %}
+                <div class="border rounded p-3 mb-3">
+                    <div class="d-flex align-items-center mb-2">
+                        <strong class="me-2">Round {{ round_data.round_num }}</strong>
+                        <span class="text-info" data-bs-toggle="tooltip"
+                              title="AES round: SubBytes → ShiftRows → MixColumns → AddRoundKey">
+                            <i class="fa-solid fa-circle-info"></i>
+                        </span>
+                    </div>
+
+                    <div class="row mt-2">
+                        <div class="col-md-6">
+                            <strong>State</strong>
+                            <table class="table table-bordered small state-table">
+                                {% for row in round_data.state %}
+                                <tr>
+                                    {% for cell in row %}
+                                    <td>{{ cell }}</td>
+                                    {% endfor %}
+                                </tr>
+                                {% endfor %}
+                            </table>
+                        </div>
+
+                        <div class="col-md-6">
+                            <strong>Round Key</strong>
+                            <table class="table table-bordered small state-table">
+                                {% for row in round_data.key %}
+                                <tr>
+                                    {% for cell in row %}
+                                    <td>{{ cell }}</td>
+                                    {% endfor %}
+                                </tr>
+                                {% endfor %}
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+{% endblock %}
