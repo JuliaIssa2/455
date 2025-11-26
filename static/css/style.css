@@ -1,0 +1,368 @@
+/* ===============================
+   THEME COLORS + DARK MODE
+   =============================== */
+
+/* Blue / default */
+:root[data-theme="blue"] {
+  --primary: #0d6efd;
+  --primary-dark: #0b5ed7;
+  --primary-light: #cfe2ff;
+  --accent: #66b2ff;
+  --bg: #f8f9fa;
+  --surface: #ffffff;
+  --text: #222;
+}
+
+/* Green */
+:root[data-theme="green"] {
+  --primary: #198754;
+  --primary-dark: #156a3b;
+  --primary-light: #d1e7dd;
+  --accent: #7bd88b;
+  --bg: #f6fbf6;
+  --surface: #ffffff;
+  --text: #1b2b1b;
+}
+
+/* Purple */
+:root[data-theme="purple"] {
+  --primary: #6f42c1;
+  --primary-dark: #59339d;
+  --primary-light: #e5dbf8;
+  --accent: #b28cff;
+  --bg: #fbf8ff;
+  --surface: #ffffff;
+  --text: #221a2b;
+}
+
+/* DARK MODE OVERRIDES — applied when <body class="dark-mode"> */
+body.dark-mode {
+  --bg: #121212;
+  --surface: #1d1d1d;
+  --text: #e8e8e8;
+  --primary-light: #2b2b2b;
+}
+
+/* ===============================
+   GENERAL RESET
+   =============================== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  transition: background 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+}
+
+/* Page */
+body {
+  font-family: -apple-system, BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;
+  background-color: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+}
+
+/* Main container */
+main {
+  min-height: calc(100vh - 72px);
+  padding: 2rem 0;
+}
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  background-color: var(--surface);
+  border-radius: 10px;
+  padding: 2rem;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+}
+
+/* DARK MODE container override */
+body.dark-mode .container {
+  background-color: #1d1d1d !important;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+}
+
+/* Headings */
+h1 { font-size: 2.2rem; margin-bottom: 1rem; text-align:center; color:var(--text); }
+h2 { font-size: 1.8rem; margin:.6rem 0 1rem 0; color:var(--primary); border-bottom:3px solid var(--primary); padding-bottom:.5rem; }
+h3,h4 { color:var(--text); }
+
+/* Form controls */
+.form-control {
+  border-radius: 10px;
+  border: 2px solid var(--primary);
+  padding: .75rem .9rem;
+  background-color: var(--surface);
+  color: var(--text);
+}
+body.dark-mode .form-control {
+  background-color: #181818;
+  border-color: #444;
+  color: #eaeaea;
+}
+
+/* Buttons */
+.btn-primary {
+  background-color: var(--primary) !important;
+  border-color: var(--primary) !important;
+}
+.btn-primary:hover {
+  background-color: var(--primary-dark) !important;
+  border-color: var(--primary-dark) !important;
+}
+.btn-info {
+  background-color: var(--accent) !important;
+  border-color: var(--accent) !important;
+  color: #fff !important;
+}
+.btn-secondary {
+  background-color: #6c757d !important;
+  border-color: #6c757d !important;
+  color: #fff !important;
+}
+.btn-outline-primary {
+  color: var(--primary) !important;
+  border-color: var(--primary) !important;
+}
+
+/* ===============================
+   RESULT + CIPHERTEXT
+   =============================== */
+.ciphertext-box {
+  background-color: var(--primary-light);
+  padding: 1.5rem;
+  border-radius: 10px;
+  margin-bottom: 1.5rem;
+  border-left: 6px solid var(--primary);
+}
+
+body.dark-mode .ciphertext-box {
+  background-color: #2b2b2b;
+  border-left-color: var(--primary);
+}
+
+.ciphertext {
+  font-family: 'Courier New', monospace;
+  font-size: 1.05rem;
+  padding: 1rem;
+  background-color: var(--surface);
+  border-radius: 6px;
+  display: block;
+  border: 1px solid rgba(0,0,0,0.08);
+  color: var(--text);
+
+  /* WRAPPING FIX */
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
+/* DARK MODE ciphertext visibility fix */
+body.dark-mode .ciphertext {
+  background-color: #181818;
+  border-color: #333;
+  color: #00ff95; /* neon green for readability */
+}
+
+/* ===============================
+   TABLES
+   =============================== */
+.round-container {
+  background-color: rgba(0,0,0,0.02);
+  padding: 1.2rem;
+  margin-bottom: 1.2rem;
+  border-radius: 8px;
+  border: 1px solid rgba(0,0,0,0.04);
+}
+
+body.dark-mode .round-container {
+  background-color: #1c1c1c;
+  border-color: #333;
+}
+
+.round-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-top: .75rem;
+}
+
+.state-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: 'Courier New', monospace;
+  font-size: .95rem;
+  background-color: var(--surface);
+  border: 1px solid rgba(0,0,0,0.06);
+}
+.state-table td {
+  padding: .5rem;
+  text-align: center;
+  border: 1px solid rgba(0,0,0,0.06);
+  font-weight: 700;
+  color: var(--primary);
+}
+
+/* DARK MODE state table */
+body.dark-mode .state-table {
+  background-color: #181818;
+  border-color: #333;
+}
+body.dark-mode .state-table td {
+  background-color: #1f1f1f;
+  border-color: #333;
+  color: #9fdcff; /* bright themed text */
+}
+
+/* ===============================
+   TOOLTIPS
+   =============================== */
+.tooltip-inner {
+  background-color: var(--primary) !important;
+  color: #fff !important;
+  border-radius: 6px;
+  padding: 6px 8px;
+}
+
+/* ===============================
+   RESPONSIVE
+   =============================== */
+@media (max-width: 768px) {
+  .container { padding: 1rem; border-radius: 6px; }
+  .round-content { grid-template-columns: 1fr; }
+  .state-table td { padding: .4rem; font-size: .85rem; }
+}
+
+/* Fix muted text disappearing in dark mode */
+body.dark-mode .text-muted {
+    color: #7bd88b !important; /* your green accent */
+    opacity: 1 !important;     /* removes Bootstrap faintness */
+}
+
+/* Dark Mode — Fix white card form */
+body.dark-mode .card {
+    background-color: #1d1d1d !important;
+    border: 1px solid #333 !important;
+    color: #e8e8e8 !important;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6) !important;
+}
+
+/* Ensure inner text inside cards inherits correct color */
+body.dark-mode .card * {
+    color: #e8e8e8 !important;
+}
+
+/* Inputs look good already, but let's blend them better */
+body.dark-mode .form-control {
+    background-color: #181818 !important;
+    border-color: #444 !important;
+    color: #eaeaea !important;
+}
+
+/* Input-group buttons inside dark card */
+body.dark-mode .input-group-text,
+body.dark-mode .btn {
+    background-color: #2b2b2b !important;
+    color: #e8e8e8 !important;
+    border-color: #3a3a3a !important;
+}
+
+/* ============================
+   DARK MODE – ACCORDION FIX
+   ============================ */
+
+/* Whole accordion item */
+body.dark-mode .accordion-item {
+    background-color: #1d1d1d !important;
+    border: 1px solid #333 !important;
+}
+
+/* Header strip (Block 0 — Input …) */
+body.dark-mode .accordion-button {
+    background-color: #1d1d1d !important;
+    color: #e8e8e8 !important;
+    border-bottom: 1px solid #337ab7; /* your blue accent line */
+}
+
+/* When the accordion is open (Bootstrap adds .not(.collapsed)) */
+body.dark-mode .accordion-button:not(.collapsed) {
+    background-color: #202020 !important;
+    color: #e8e8e8 !important;
+    box-shadow: none !important;
+}
+
+/* The body area of each accordion panel */
+body.dark-mode .accordion-body {
+    background-color: #181818 !important;
+    color: #e8e8e8 !important;
+}
+
+/* Inner boxes (the rounded "Round 0" panels that had white bg) */
+body.dark-mode .accordion-body .border {
+    background-color: #1d1d1d !important;
+    border-color: #333 !important;
+}
+
+/* ============================
+   DARK MODE — RESULT ALERT FIX
+   ============================ */
+
+body.dark-mode .alert-success {
+    background-color: #1d1d1d !important;  /* dark grey */
+    border-color: #333 !important;          /* subtle border */
+    color: #e8e8e8 !important;              /* readable text */
+}
+
+/* The ciphertext box INSIDE the alert also needs styling */
+body.dark-mode .alert-success .ciphertext {
+    background-color: #181818 !important;
+    border-color: #333 !important;
+    color: #00ff95 !important; /* bright green like your ciphertext */
+}
+
+/* "Recovered Plaintext (UTF-8)" heading inside alert */
+body.dark-mode .alert-success strong {
+    color: #e8e8e8 !important;
+}
+
+/* Copy button inside alert */
+body.dark-mode .alert-success .btn {
+    background-color: #2b2b2b !important;
+    border-color: #444 !important;
+    color: #e8e8e8 !important;
+}
+
+/* ============================================
+   THEME-AWARE RESULT BOX (light mode)
+   ============================================ */
+.alert.alert-success {
+    background-color: var(--primary-light) !important;
+    border-left: 6px solid var(--primary) !important;
+    color: var(--text) !important;
+    border-radius: 10px !important;
+    padding: 1.5rem !important;
+}
+
+/* Fix inner ciphertext box contrast */
+.alert.alert-success .ciphertext {
+    background-color: var(--surface) !important;
+    border: 1px solid rgba(0,0,0,0.1) !important;
+    color: var(--text) !important;
+}
+
+/* ============================================
+   DARK MODE — THEME-AWARE RESULT BOX
+   ============================================ */
+body.dark-mode .alert.alert-success {
+    background-color: #1a1a1a !important; /* dark surface */
+    border-left: 6px solid var(--primary) !important;
+    color: #e8e8e8 !important;
+}
+
+body.dark-mode .alert.alert-success .ciphertext {
+    background-color: #121212 !important;
+    border-color: #333 !important;
+    color: #00ff95 !important; /* neon for visibility */
+}
+
+
+/* END */
